@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="ne">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>गोलबजार नगरपालिका, पञ्जीकरण शाखा</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body{background:#f4f7fb;font-family:"Noto Sans Devanagari","Nirmala UI",Arial,sans-serif}
+.navbar{background:#123b63}.brand{font-weight:700}.card{border:0;box-shadow:0 2px 12px #00000012}
+.sidebar{min-height:calc(100vh - 56px);background:#fff;border-right:1px solid #ddd}
+.sidebar .nav-link{color:#234;padding:.65rem .8rem;border-radius:.5rem;margin:.15rem 0}.sidebar .nav-link.active,.sidebar .nav-link:hover{background:#eaf2fb;color:#123b63}
+.hidden{display:none!important}.table th{white-space:nowrap}.small-muted{font-size:.85rem;color:#6c757d}
+.badge-bank{font-size:.85rem}.letter{background:#fff;padding:30px 42px;max-width:850px;margin:auto;line-height:1.85}.letter .date{text-align:right}.letter h5{font-weight:700}.letter .body{text-align:justify}
+.recommendation-letterhead{position:relative;display:flex;align-items:center;justify-content:center;min-height:82px;padding:0 88px;text-align:center;font-weight:700;line-height:1.55}
+.recommendation-letterhead img{position:absolute;left:0;top:50%;transform:translateY(-50%);width:72px;height:72px;object-fit:contain}
+.letterhead-text{width:100%}
+.ward-letterhead{color:#c00}
+.ward-letterhead .ward-letterhead-title{font-size:1.4em;color:#c00}
+@media(max-width:575px){.recommendation-letterhead{padding:0 64px;min-height:66px}.recommendation-letterhead img{width:56px;height:56px}}
+.ward-reference-number{text-align:left}
+.ward-subject{text-align:center}
+@media print{
+ body *{visibility:hidden!important}
+ #printArea,#printArea *{visibility:visible!important}
+ #printArea{display:block!important;position:absolute;inset:0;width:100%;margin:0}
+ .no-print,.navbar,.sidebar,.top-actions{display:none!important}
+ body{background:#fff}.letter{box-shadow:none;max-width:none;padding:10mm 15mm}
+}
+.date-picker-backdrop{position:fixed;inset:0;background:#0008;z-index:2000;display:flex;align-items:center;justify-content:center;padding:1rem}
+.date-picker{background:#fff;border-radius:.75rem;padding:1.25rem;width:min(420px,100%);box-shadow:0 8px 32px #0003}
+.date-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem}
+.date-grid button{min-height:40px}
+.date-picker-backdrop.hidden{display:none!important}
+@media print{.date-picker-backdrop{display:none!important}}
+.login-header{max-width:1100px;margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:1rem 1.5rem;background:#fff;border-radius:.75rem;box-shadow:0 2px 12px #00000012}
+.welcome-ticker{flex:1;min-width:0;overflow:hidden;color:#123b63;text-align:center}
+.welcome-ticker h1{font-size:clamp(1.35rem,3vw,2rem);font-weight:700;margin:0 0 .5rem}
+.welcome-ticker .ticker-window{overflow:hidden;white-space:nowrap}
+.welcome-ticker .ticker-text{display:inline-block;font-size:clamp(1rem,2.2vw,1.35rem);font-weight:600;animation:tickerMove 16s linear infinite}
+@keyframes tickerMove{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@media(max-width:575px){.login-header{gap:.5rem;padding:.8rem}.welcome-ticker h1{font-size:1.1rem}.welcome-ticker .ticker-text{font-size:.9rem;animation-duration:18s}}
+.chart-card canvas{display:block;width:100%;height:300px}
+.attachment-preview{max-width:130px;max-height:100px;object-fit:cover;border:1px solid #dee2e6;border-radius:.35rem;margin:.25rem}
+
+.scan-modal{position:fixed;inset:0;background:#0009;z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px}
+.scan-modal.hidden,.mobile-scanner-page.hidden{display:none!important}
+.scan-box{background:#fff;width:min(520px,100%);max-height:92vh;overflow:auto;border-radius:15px;padding:22px;box-shadow:0 10px 40px #0005;text-align:center}
+#qrCodeBox{display:flex;justify-content:center;align-items:center;min-height:230px}
+#qrCodeBox img{padding:10px;background:#fff}
+.mobile-scanner-page{position:fixed;inset:0;background:#f4f7fb;z-index:10000;overflow:auto}
+.mobile-scan-container{max-width:650px;margin:auto;padding:20px;text-align:center}
+#mobileCamera{width:100%;max-height:68vh;background:#000;border-radius:12px;object-fit:cover}
+#mobilePreview img{width:100%;max-height:430px;object-fit:contain;border-radius:10px;border:2px solid #198754;background:#fff}
+#receivedDocuments img{width:120px;height:90px;object-fit:cover;border:2px solid #198754;border-radius:8px;margin:5px}
+.scan-camera-frame{position:absolute;left:8%;right:8%;top:18%;bottom:18%;border:2px dashed #fff;border-radius:10px;pointer-events:none;box-shadow:0 0 0 9999px #0002}
+.scan-success{color:#198754;font-weight:600}.scan-note{font-size:.85rem;color:#6c757d}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-dark no-print">
+ <div class="container-fluid"><span class="navbar-brand">गोलबजार नगरपालिका — सामाजिक सुरक्षा सिफारिस व्यवस्थापन</span><span id="userBadge" class="text-white"></span></div>
+</nav>
+
+<div id="loginView" class="container py-5">
+ <h2 class="text-center mb-3">गोलबजार नगरपालिका, पञ्जीकरण शाखा</h2>
+ <div class="login-header" aria-label="स्वागत सन्देश">
+  <div class="welcome-ticker"><div class="ticker-window"><span class="ticker-text">सामाजिक सुरक्षा भत्ता व्यवस्थापन प्रणालीमा यहाँलाई स्वागत छ । 🙏</span></div></div>
+ </div>
+ <div class="row justify-content-center"><div class="col-md-5">
+  <div class="card p-4">
+   <h4 class="text-center mb-3">प्रयोगकर्ता लगइन</h4>
+   <div class="mb-3"><label>प्रयोगकर्ता नाम</label><input id="loginUser" class="form-control"></div>
+   <div class="mb-3"><label>पासवर्ड</label><input id="loginPass" type="password" class="form-control"><div class="form-check mt-2"><input id="showLoginPassword" class="form-check-input" type="checkbox" onchange="toggleLoginPassword(this.checked)"><label class="form-check-label" for="showLoginPassword">पासवर्ड देखाउनुहोस्</label></div></div>
+   <button class="btn btn-primary w-100" onclick="login()">लगइन</button>
+   <div class="small-muted mt-3">डेमो नगरपालिका: admin / admin123</div>
+  </div>
+ </div></div>
+</div>
+
+<div id="appView" class="hidden">
+ <div class="container-fluid"><div class="row">
+  <aside class="col-md-2 sidebar p-3 no-print">
+   <div class="fw-bold mb-2" id="roleTitle"></div>
+   <nav id="nav"></nav>
+   <hr><button class="btn btn-outline-danger btn-sm w-100" onclick="logout()">लगआउट</button>
+  </aside>
+  <main class="col-md-10 p-4">
+   <section id="wardFormSection" class="hidden">
+    <div class="d-flex justify-content-between align-items-center mb-3"><h4 id="wardFormTitle">वडाबाट सामाजिक सुरक्षा सिफारिस</h4><span id="autoBank" class="badge text-bg-info badge-bank"></span></div>
+    <div class="card p-4">
+     <div class="row g-3">
+      <div class="col-md-3"><label>सिफारिसको किसिम</label><select id="recType" class="form-select" onchange="toggleType()"><option value="death">मृत्यु भएको</option><option value="disabled">विरामी/शारीरिक अशक्त</option></select></div>
+      <div class="col-md-3"><label>वडा नं.</label><input id="wardNo" class="form-control" readonly></div>
+      <div class="col-md-6"><label>सम्बन्धित बैंक</label><select id="bank" class="form-select" onchange="bankCheck()"></select><div id="bankWarn" class="text-danger small"></div></div>
+      <div class="col-md-6"><label>प.स.</label><input id="ps" class="form-control"></div>
+      <input id="chNo" type="hidden" value="">
+      <div class="col-md-6"><label>पत्र मिति (वि.सं.)</label><input id="letterDate" class="form-control" placeholder="जस्तै २०८३/०६/०९"></div>
+     </div>
+     <hr>
+     <div class="row g-3">
+      <div class="col-md-4 disabledOnly hidden"><label>निवेदकको नाम</label><input id="applicantName" class="form-control"></div>
+      <div class="col-md-4"><label>लाभग्राहीको बुवा/ससुराको नाम</label><input id="father" class="form-control"></div>
+      <div class="col-md-4"><label>लाभग्राहीसँगको सम्बन्ध</label><input id="relation" class="form-control"></div>
+      <div class="col-md-4"><label>सा.सु. परिचयपत्र नं.</label><input id="ssn" class="form-control" inputmode="numeric" minlength="13" maxlength="13"></div>
+      <div class="col-md-4"><label>लाभग्राहीको नाम</label><input id="beneficiary" class="form-control"></div>
+      <div class="col-md-4 deathOnly"><label>मृत्यु भएको मिति</label><input id="deathDate" class="form-control" placeholder="वि.सं."></div>
+      <div class="col-md-4"><label>भत्ता प्राप्त गर्ने अन्तिम आ.व.</label><input id="fy" class="form-control"></div>
+      <div class="col-md-4"><label>अन्तिम त्रैमासिक</label><select id="quarter" class="form-select"><option>प्रथम</option><option>दोस्रो</option><option>तेस्रो</option><option>चौथो</option></select></div>
+      <div class="col-md-4 deathOnly"><label>प्राप्त गर्नुपर्ने रकम</label><input id="amount" type="text" inputmode="numeric" class="form-control"></div>
+      <div class="col-md-4 deathOnly"><label>अक्षरेपी रकम</label><input id="amountWords" class="form-control" readonly></div>
+      <div class="col-md-4 deathOnly"><label>फिर्ता गर्नुपर्ने रकम</label><input id="refundAmount" type="text" inputmode="numeric" class="form-control"></div>
+      <div class="col-md-4 deathOnly"><label>फिर्ता रकम अक्षरेपी</label><input id="refundAmountWords" class="form-control" readonly></div>
+      <div class="col-md-4"><label>संरक्षकसँगको सम्बन्ध</label><input id="guardianRelation" class="form-control"></div>
+      <div class="col-md-4"><label>संरक्षकको नागरिकता नं.</label><input id="citizenship" class="form-control"></div>
+      <div class="col-md-4"><label>संरक्षकको नागरिकता जारी मिति</label><input id="citizenDate" class="form-control" placeholder="वि.सं."></div>
+      <div class="col-md-4"><label>संरक्षकको नाम</label><input id="guardian" class="form-control"></div>
+     </div>
+     <div class="row g-3 mt-1">
+      <div class="col-md-4 disabledOnly hidden"><label>आफै उपस्थित हुन नसक्नुको कारण</label><input id="disabilityReason" class="form-control" placeholder="जस्तै: आफै उपस्थित हुन नसक्ने हुँदा"></div>
+      <div class="col-md-4 deathOnly"><label>लागत कट्टा भएको?</label><div class="mt-2"><label class="me-3"><input type="radio" name="cost" value="yes"> हो</label><label><input type="radio" name="cost" value="no" checked> होइन</label></div></div>
+      <div class="col-12">
+<label class="form-label fw-bold">समर्थन कागजात</label>
+<div class="d-flex flex-wrap gap-2">
+<label class="btn btn-outline-primary">📁 Computer बाट फाइल छान्नुहोस्
+<input id="documents" type="file" accept="image/*" multiple hidden>
+</label>
+<button type="button" class="btn btn-primary" onclick="openMobileScanner()">📱 मोबाइलबाट स्क्यान गर्नुहोस्</button>
+</div>
+<div class="form-text">Computer बाट फोटो छान्न वा QR Code प्रयोग गरेर मोबाइलको Camera बाट कागजात स्क्यान गर्न सकिन्छ। अधिकतम ३ वटा कागजात।</div>
+<div id="documentStatus" class="mt-2"></div>
+<div id="documentPreviews" class="d-flex flex-wrap mt-2"></div>
+</div>
+     </div>
+     <div class="mt-4 top-actions">
+      <button id="saveWardButton" class="btn btn-success" onclick="saveWardRecord(false)">रेकर्ड सुरक्षित गर्नुहोस्</button>
+      <button id="printWardButton" class="btn btn-primary" onclick="saveWardRecord(true)">सुरक्षित गरी पत्र प्रिन्ट</button>
+      <button id="previewWardButton" class="btn btn-secondary" onclick="previewWard()">पूर्वावलोकन</button>
+      <button id="cancelWardEditButton" class="btn btn-outline-secondary hidden" onclick="cancelWardEdit()">रद्द गर्नुहोस्</button>
+     </div>
+     <div id="wardMsg" class="mt-3"></div>
+    </div>
+   </section>
+
+   <section id="wardListSection" class="hidden">
+    <div class="card p-4"><div class="d-flex justify-content-between"><h4>वडा सिफारिसका रेकर्ड</h4><button class="btn btn-success" onclick="exportExcel('ward')">Excel डाउनलोड</button></div>
+     <div class="row g-2 my-3"><div class="col-md-4"><input id="wFrom" class="form-control" placeholder="मिति देखि (वि.सं.)"></div><div class="col-md-4"><input id="wTo" class="form-control" placeholder="मिति सम्म (वि.सं.)"></div><div class="col-md-2"><button class="btn btn-outline-primary w-100" onclick="renderWardList()">फिल्टर</button></div></div>
+     <div class="table-responsive"><table class="table table-bordered table-sm" id="wardTable"><thead><tr><th>मिति</th><th>किसिम</th><th>लाभग्राही</th><th>परिचय नं.</th><th>वडा</th><th>बैंक</th><th>स्थिति</th><th>कार्य</th></tr></thead><tbody></tbody></table></div>
+    </div>
+   </section>
+
+   <section id="municipalitySection" class="hidden">
+    <div class="card p-4">
+     <div class="d-flex justify-content-between align-items-center"><h4>नगरपालिका — बैंक सिफारिस</h4><button class="btn btn-success" onclick="exportExcel('municipality')">Excel डाउनलोड</button></div>
+     <div class="row g-2 my-3">
+      <div class="col-md-3"><select id="mWard" class="form-select"><option value="">सबै वडा</option></select></div>
+      <div class="col-md-3"><select id="mType" class="form-select"><option value="">सबै किसिम</option><option value="death">मृत्यु भएको</option><option value="disabled">विरामी/अशक्त</option></select></div>
+      <div class="col-md-3"><input id="mFrom" class="form-control" placeholder="मिति देखि"></div><div class="col-md-3"><input id="mTo" class="form-control" placeholder="मिति सम्म"></div>
+     </div>
+     <button class="btn btn-outline-primary mb-3" onclick="renderMunicipality()">फिल्टर</button>
+     <div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th>वडा</th><th>लाभग्राही</th><th>किसिम</th><th>वडा पत्र मिति</th><th>बैंक</th><th>नगर पत्र</th><th>कार्य</th></tr></thead><tbody id="municipalityBody"></tbody></table></div>
+    </div>
+   </section>
+
+   <section id="templatesSection" class="hidden">
+    <div class="card p-4"><h4>नगरपालिका पत्रको ढाँचा</h4>
+     <p class="small-muted">विषय, सम्बोधन, व्यहोरा र अन्तिम अनुच्छेद छुट्टाछुट्टै सम्पादन गरी सुरक्षित गर्न सकिन्छ। <code>{{field}}</code> placeholders प्रयोग गर्न सकिन्छ।</p>
+     <label>सम्बोधन</label><textarea id="tplAddress" class="form-control mb-3" rows="3"></textarea>
+     <label>विषय</label><textarea id="tplSubject" class="form-control mb-3" rows="2"></textarea>
+     <label>व्यहोरा</label><textarea id="tplBody" class="form-control mb-3" rows="8"></textarea>
+     <label>अन्तिम अनुच्छेद</label><textarea id="tplClosing" class="form-control mb-3" rows="4"></textarea>
+     <button class="btn btn-primary" onclick="saveTemplate()">ढाँचा सुरक्षित गर्नुहोस्</button><span id="tplMsg" class="ms-2"></span>
+    </div>
+   </section>
+
+   <section id="usersSection" class="hidden">
+    <div class="card p-4"><h4>वडा प्रयोगकर्ता व्यवस्थापन</h4>
+     <div class="row g-2"><div class="col-md-3"><select id="newWard" class="form-select"></select></div><div class="col-md-3"><input id="newUser" class="form-control" placeholder="User ID"></div><div class="col-md-3"><input id="newPass" class="form-control" placeholder="Password"></div><div class="col-md-3"><button class="btn btn-success w-100" onclick="createWardUser()">सिर्जना/अपडेट</button></div></div>
+     <div class="table-responsive mt-4"><table class="table table-bordered"><thead><tr><th>वडा</th><th>User ID</th><th>कार्य</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+    </div>
+   </section>
+
+   <section id="dashboardSection" class="hidden">
+    <div class="row g-3 mb-3"><div class="col-md-3"><div class="card p-4"><div class="small-muted">कुल रेकर्ड</div><h2 id="dTotal">0</h2></div></div><div class="col-md-3"><div class="card p-4"><div class="small-muted">मृत्यु</div><h2 id="dDeath">0</h2></div></div><div class="col-md-3"><div class="card p-4"><div class="small-muted">अशक्त/विरामी</div><h2 id="dDisabled">0</h2></div></div><div class="col-md-3"><div class="card p-4"><div class="small-muted">नगरबाट जारी</div><h2 id="dPrinted">0</h2></div></div></div>
+    <div class="row g-3"><div class="col-lg-6"><div class="card p-3 chart-card"><h5>सिफारिसको किसिम अनुसार</h5><canvas id="recommendationChart" aria-label="किसिम अनुसार सिफारिसको बार चार्ट"></canvas></div></div><div class="col-lg-6"><div class="card p-3 chart-card"><h5>भत्ता र फिर्ता रकम</h5><canvas id="amountChart" aria-label="भत्ता र फिर्ता रकमको पाई चार्ट"></canvas></div></div></div>
+   </section>
+
+   <section id="printArea" class="print-area hidden"></section>
+  </main>
+ </div></div>
+</div>
+
+
+<div id="mobileScanModal" class="scan-modal hidden">
+<div class="scan-box">
+<div class="d-flex justify-content-between align-items-center mb-2"><h5 class="mb-0">📱 मोबाइलबाट कागजात स्क्यान</h5><button class="btn-close" type="button" onclick="closeMobileScanner()"></button></div>
+<p class="small-muted">मोबाइलको Camera खोल्न तलको QR Code Scan गर्नुहोस्।</p>
+<div id="qrCodeBox"></div>
+<div id="computerScanStatus" class="alert alert-info mt-3">QR Code तयार हुँदैछ...</div>
+<div class="scan-note">मोबाइल Camera का लागि HTTPS आवश्यक पर्न सक्छ।</div>
+<div id="receivedDocuments" class="d-flex flex-wrap justify-content-center mt-2"></div>
+<button class="btn btn-secondary w-100 mt-3" type="button" onclick="closeMobileScanner()">बन्द गर्नुहोस्</button>
+</div></div>
+<div id="mobileScannerPage" class="mobile-scanner-page hidden">
+<div class="mobile-scan-container">
+<h4>गोलबजार नगरपालिका</h4><p class="fw-semibold">सामाजिक सुरक्षा कागजात स्क्यान</p>
+<div style="position:relative"><video id="mobileCamera" autoplay playsinline></video><div class="scan-camera-frame"></div></div>
+<canvas id="mobileCanvas" class="hidden"></canvas>
+<button id="captureDocumentBtn" class="btn btn-primary btn-lg w-100 mt-3" type="button" onclick="captureMobileDocument()">📷 कागजात खिच्नुहोस्</button>
+<div id="mobilePreview" class="mt-3"></div>
+<div class="d-flex gap-2 mt-3">
+<button id="retakeDocumentBtn" class="btn btn-outline-secondary btn-lg flex-fill hidden" type="button" onclick="retakeMobileDocument()">↻ फेरि खिच्नुहोस्</button>
+<button id="sendDocumentBtn" class="btn btn-success btn-lg flex-fill hidden" type="button" onclick="sendScannedDocument()">✓ Computer मा पठाउनुहोस्</button>
+</div>
+<div id="mobileScanMessage" class="mt-3"></div>
+</div></div>
+
+<div id="bsDatePicker" class="date-picker-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="datePickerTitle" onclick="if(event.target===this)closeBsDatePicker()">
+ <div class="date-picker">
+  <div class="d-flex justify-content-between align-items-center mb-3"><h5 id="datePickerTitle" class="mb-0">वि.सं. मिति छनोट</h5><button type="button" class="btn-close" aria-label="बन्द गर्नुहोस्" onclick="closeBsDatePicker()"></button></div>
+  <div class="row g-2 mb-3"><div class="col-6"><label for="bsYear" class="form-label">वर्ष</label><select id="bsYear" class="form-select" onchange="renderBsDays()"></select></div><div class="col-6"><label for="bsMonth" class="form-label">महिना</label><select id="bsMonth" class="form-select" onchange="renderBsDays()"></select></div></div>
+  <div id="bsDayGrid" class="date-grid"></div>
+  <div class="small-muted mt-3">दिन छनोट गरेपछि मिति वि.सं. ढाँचामा भरिनेछ।</div>
+ </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+const BANKS={1:"एन.आई.सि. एसिया बैंक",2:"सिद्धार्थ बैंक",3:"ग्लोबल आई.एम.ई. बैंक",4:"एन.एम.बि. बैंक",5:"ज्योति विकास बैंक",6:"नविल बैंक",7:"मुक्तिनाथ विकास बैंक",8:"मुक्तिनाथ विकास बैंक",9:"कुमारी बैंक",10:"ग्लोबल आई.एम.ई. बैंक",11:"महालक्ष्मी विकास बैंक",12:"नेपाल बैंक",13:"ज्योति विकास बैंक"};
+const PLACES={1:"मुक्सार",2:"लालपुर",3:"जम्दह",4:"असनपुर",5:"असनपुर",6:"गोलबजार",7:"चन्द्रलालपुर",8:"चन्द्रलालपुर",9:"चन्द्रोदयपुर",10:"चन्द्रोदयपुर",11:"बलकावा",12:"बेतौना",13:"दुर्गापुर"};
+const branch="शाखा कार्यालय गोलबजार, सिरहा ।";
+let users=JSON.parse(localStorage.getItem("gb_users")||"null")||{admin:{password:"admin123",role:"municipality"}};
+let records=JSON.parse(localStorage.getItem("gb_records")||"[]");
+let template=JSON.parse(localStorage.getItem("gb_template")||"null")||{
+ address:"श्री शाखा प्रबन्धकज्यू,\\n{{bank}}\\nशाखा कार्यालय गोलबजार, सिरहा ।",
+ subject:"विषय : सामाजिक सुरक्षा भत्ता उपलब्ध गराईदिनुहुन ।",
+ body:"प्रस्तुत विषयमा गोलबजार नगरपालिका वडा नं. {{ward}} बाट प्राप्त सिफारिस बमोजिम सा.सु. परिचयपत्र नं. {{ssn}} का {{beneficiary}} लाई {{typeText}} भएको/रहेको हुँदा निजको हकमा उपलब्ध सामाजिक सुरक्षा भत्ता निजका {{guardianRelation}} {{guardian}} लाई उपलब्ध गराईदिनुहुन सिफारिस साथ अनुरोध छ ।",
+ closing:"उक्त भत्ता नियमानुसार उपलब्ध गराईदिनुहुन अनुरोध छ ।"
+};
+let current=null;
+let editingRecordId=null;
+let bsDateTarget=null;
+const bsMonths=["बैशाख","जेठ","असार","साउन","भदौ","असोज","कार्तिक","मंसिर","पुष","माघ","फागुन","चैत"];
+const nepaliDigits="०१२३४५६७८९";
+function adToBsDate(date=new Date()){
+ const localDate=new Date(date.getFullYear(),date.getMonth(),date.getDate());
+ const anchor=new Date(2025,3,14),monthDays=[31,31,31,32,31,31,30,29,30,29,30,30];
+ let offset=Math.floor((localDate-anchor)/86400000),year=2082;
+ while(offset<0){year--;offset+=365}while(offset>=365){year++;offset-=365}
+ let month=0;while(month<11&&offset>=monthDays[month])offset-=monthDays[month++];
+ return `${toNepaliDigits(year)}/${toNepaliDigits(String(month+1).padStart(2,"0"))}/${toNepaliDigits(String(offset+1).padStart(2,"0"))}`;
+}
+function todayBsDate(){return adToBsDate(new Date())}
+function toAsciiDigits(s){return s.replace(/[०-९]/g,c=>String(nepaliDigits.indexOf(c)))}
+function toNepaliDigits(s){return String(s).replace(/[0-9]/g,c=>nepaliDigits[+c])}
+const nepaliNumberWords=["शून्य","एक","दुई","तीन","चार","पाँच","छ","सात","आठ","नौ","दश","एघार","बाह्र","तेह्र","चौध","पन्ध्र","सोह्र","सत्र","अठार","उन्नाइस","बीस","एक्काइस","बाइस","तेइस","चौबीस","पच्चीस","छब्बीस","सत्ताइस","अठ्ठाइस","उनन्तीस","तीस","एकतीस","बत्तीस","तेत्तीस","चौँतीस","पैँतीस","छत्तीस","सैँतीस","अठतीस","उनन्चालीस","चालीस","एकचालीस","बयालीस","त्रिचालीस","चवालीस","पैँतालीस","छयालीस","सतचालीस","अठचालीस","उनन्चास","पचास","एकाउन्न","बाउन्न","त्रिपन्न","चौवन्न","पचपन्न","छपन्न","सन्ताउन्न","अन्ठाउन्न","उनन्साठी","साठी","एकसट्ठी","बासट्ठी","त्रिसट्ठी","चौंसट्ठी","पैँसट्ठी","छैसट्ठी","सतसट्ठी","अठसट्ठी","उनन्सत्तरी","सत्तरी","एकहत्तर","बहत्तर","त्रिहत्तर","चौहत्तर","पचहत्तर","छयहत्तर","सतहत्तर","अठहत्तर","उनासी","असी","एकासी","बयासी","त्रियासी","चौरासी","पचासी","छयासी","सतासी","अठासी","उनान्नब्बे","नब्बे","एकान्नब्बे","बयान्नब्बे","त्रियान्नब्बे","चौरान्नब्बे","पन्चान्नब्बे","छयान्नब्बे","सन्तान्नब्बे","अन्ठान्नब्बे","उनान्सय"];
+function numberToNepaliWords(value){
+ const number=Number(value);
+ if(!Number.isSafeInteger(number)||number<0)return "";
+ if(number===0)return nepaliNumberWords[0];
+ function convert(n){
+  if(n<100)return nepaliNumberWords[n];
+  for(const [scale,label] of [[10000000,"करोड"],[100000,"लाख"],[1000,"हजार"],[100,"सय"]]){
+   if(n>=scale){const quotient=Math.floor(n/scale),remainder=n%scale;return convert(quotient)+" "+label+(remainder?" "+convert(remainder):"")}
+  }
+  return "";
+ }
+ return convert(number);
+}
+function updateAmountWords(){
+ const raw=toAsciiDigits(document.getElementById("amount").value).replace(/[^0-9]/g,"");
+ document.getElementById("amountWords").value=raw?numberToNepaliWords(raw):"";
+}
+function updateRefundAmountWords(){
+ const raw=toAsciiDigits(document.getElementById("refundAmount").value).replace(/[^0-9]/g,"");
+ document.getElementById("refundAmountWords").value=raw?numberToNepaliWords(raw):"";
+}
+function setupNepaliNumberInputs(){
+ const ids=["ps","chNo","ssn","fy","amount","amountWords","refundAmount","refundAmountWords","citizenship","letterDate","deathDate","citizenDate","wFrom","wTo","mFrom","mTo"];
+ ids.forEach(id=>{
+  const input=document.getElementById(id);
+  input.addEventListener("input",()=>{input.value=toNepaliDigits(input.value)});
+ });
+ document.getElementById("amount").addEventListener("input",updateAmountWords);
+ document.getElementById("refundAmount").addEventListener("input",updateRefundAmountWords);
+}
+function setupDocumentInput(){
+ const input=document.getElementById("documents");
+ input.addEventListener("change",()=>{
+  if(input.files.length>3){alert("अधिकतम ३ वटा फोटो मात्र छान्न सकिन्छ।");input.value="";return}
+  renderAllDocumentPreviews();
+ });
+}
+
+function openBsDatePicker(id){
+ bsDateTarget=document.getElementById(id);
+ const parts=toAsciiDigits(bsDateTarget.value).split(/[/-]/),year=Number(parts[0])||2083,month=Number(parts[1])||1;
+ document.getElementById("bsYear").value=String(Math.min(2100,Math.max(2000,year)));
+ document.getElementById("bsMonth").value=String(Math.min(12,Math.max(1,month)));
+ renderBsDays();document.getElementById("bsDatePicker").classList.remove("hidden");
+}
+function closeBsDatePicker(){document.getElementById("bsDatePicker").classList.add("hidden");bsDateTarget=null}
+function renderBsDays(){
+ const grid=document.getElementById("bsDayGrid");grid.innerHTML="";
+ for(let day=1;day<=32;day++){
+  const b=document.createElement("button");b.type="button";b.className="btn btn-outline-secondary";b.textContent=toNepaliDigits(day);
+  b.onclick=()=>{if(bsDateTarget){const y=document.getElementById("bsYear").value,m=String(document.getElementById("bsMonth").value).padStart(2,"0"),d=String(day).padStart(2,"0");bsDateTarget.value=`${toNepaliDigits(y)}/${toNepaliDigits(m)}/${toNepaliDigits(d)}`;bsDateTarget.dispatchEvent(new Event("change",{bubbles:true}))}closeBsDatePicker()};
+  grid.appendChild(b);
+ }
+}
+function setupBsDatePickers(){
+ const ids=["letterDate","deathDate","citizenDate","wFrom","wTo","mFrom","mTo"];
+ const years=document.getElementById("bsYear"),months=document.getElementById("bsMonth");
+ years.innerHTML=Array.from({length:101},(_,i)=>`<option value="${2000+i}">${toNepaliDigits(2000+i)}</option>`).join("");
+ months.innerHTML=bsMonths.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("");
+ ids.forEach(id=>{const input=document.getElementById(id),group=document.createElement("div"),button=document.createElement("button");group.className="input-group";input.parentNode.insertBefore(group,input);group.appendChild(input);button.type="button";button.className="btn btn-outline-secondary";button.textContent="क्यालेन्डर";button.setAttribute("aria-label","वि.सं. मिति छनोट");button.onclick=()=>openBsDatePicker(id);group.appendChild(button)});
+}
+
+
+let scannerPeer=null,scannerConnection=null,mobileStream=null,capturedScanData=null,scannedDocuments=[],scannerSessionId=null;
+
+function renderAllDocumentPreviews(){
+ const box=document.getElementById("documentPreviews");if(!box)return;box.replaceChildren();
+ Array.from(document.getElementById("documents")?.files||[]).forEach(file=>{
+  const img=document.createElement("img");img.className="attachment-preview";img.alt=file.name;img.src=URL.createObjectURL(file);box.appendChild(img);
+ });
+ scannedDocuments.forEach(item=>{
+  const img=document.createElement("img");img.className="attachment-preview";img.alt=item.name;img.src=item.data;box.appendChild(img);
+ });
+ const total=Math.min(3,(document.getElementById("documents")?.files.length||0)+scannedDocuments.length);
+ document.getElementById("documentStatus").innerHTML=`<span class="text-success">📎 संलग्न कागजात: ${toNepaliDigits(total)}/३</span>`;
+}
+function openMobileScanner(){
+ if(location.protocol==="file:"){alert("यो सुविधा मोबाइलबाट प्रयोग गर्न website लाई server/HTTPS मा चलाउनुपर्छ। file:// बाट QR camera transfer चल्दैन।");return}
+ if((document.getElementById("documents")?.files.length||0)+scannedDocuments.length>=3){alert("अधिकतम ३ वटा कागजात पूरा भइसकेका छन्।");return}
+ scannerSessionId=crypto.randomUUID();
+ document.getElementById("mobileScanModal").classList.remove("hidden");
+ document.getElementById("qrCodeBox").replaceChildren();document.getElementById("receivedDocuments").replaceChildren();
+ if(scannerPeer)try{scannerPeer.destroy()}catch(e){}
+ scannerPeer=new Peer();
+ scannerPeer.on("open",peerId=>{
+  const url=window.location.href.split("?")[0]+"?mobileScan="+encodeURIComponent(peerId)+"&session="+encodeURIComponent(scannerSessionId);
+  new QRCode(document.getElementById("qrCodeBox"),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M});
+  document.getElementById("computerScanStatus").textContent="मोबाइलबाट QR Code Scan गर्नुहोस्।";
+ });
+ scannerPeer.on("connection",conn=>{
+  scannerConnection=conn;
+  conn.on("open",()=>{document.getElementById("computerScanStatus").innerHTML='<span class="scan-success">✓ मोबाइल जोडियो। अब कागजातको फोटो खिच्नुहोस्।</span>';conn.send({type:"hello",sessionId:scannerSessionId})});
+  conn.on("data",data=>{if(data?.sessionId!==scannerSessionId)return;if(data.type==="document")receiveMobileDocument(data)});
+ });
+ scannerPeer.on("error",()=>document.getElementById("computerScanStatus").textContent="Connection मा समस्या भयो। QR फेरि Scan गर्नुहोस्।");
+}
+function closeMobileScanner(){stopMobileCamera();if(scannerPeer)try{scannerPeer.destroy()}catch(e){}scannerPeer=null;scannerConnection=null;document.getElementById("mobileScanModal").classList.add("hidden")}
+function receiveMobileDocument(data){
+ const count=(document.getElementById("documents")?.files.length||0)+scannedDocuments.length;
+ if(count>=3)return;
+ scannedDocuments.push({name:data.name||"mobile-document.jpg",data:data.data});
+ const img=document.createElement("img");img.src=data.data;img.alt=data.name||"mobile-document.jpg";document.getElementById("receivedDocuments").appendChild(img);
+ renderAllDocumentPreviews();document.getElementById("computerScanStatus").innerHTML='<span class="scan-success">✓ कागजात Computer मा प्राप्त भयो।</span>';
+}
+async function startMobileScanner(){
+ const p=new URLSearchParams(location.search),peerId=p.get("mobileScan"),session=p.get("session");if(!peerId||!session)return;
+ document.getElementById("loginView").classList.add("hidden");document.getElementById("appView").classList.add("hidden");document.getElementById("mobileScannerPage").classList.remove("hidden");
+ scannerSessionId=session;scannerPeer=new Peer();
+ scannerPeer.on("open",()=>{scannerConnection=scannerPeer.connect(peerId,{reliable:true});scannerConnection.on("open",async()=>{document.getElementById("mobileScanMessage").innerHTML='<span class="scan-success">✓ Computer सँग जोडियो।</span>';await startMobileCamera()})});
+ scannerPeer.on("error",()=>document.getElementById("mobileScanMessage").innerHTML='<span class="text-danger">Computer सँग जोडिन सकेन। QR फेरि Scan गर्नुहोस्।</span>');
+}
+async function startMobileCamera(){
+ try{
+  mobileStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1920},height:{ideal:1080}},audio:false});
+  const v=document.getElementById("mobileCamera");v.srcObject=mobileStream;await v.play();
+  document.getElementById("mobileScanMessage").innerHTML='<span class="scan-success">✓ Camera तयार छ। कागजात फ्रेमभित्र राख्नुहोस्।</span>';
+ }catch(e){document.getElementById("mobileScanMessage").innerHTML='<span class="text-danger">Camera खोल्न सकेन। HTTPS र Camera permission जाँच गर्नुहोस्।</span>'}
+}
+function stopMobileCamera(){if(mobileStream){mobileStream.getTracks().forEach(t=>t.stop());mobileStream=null}const v=document.getElementById("mobileCamera");if(v)v.srcObject=null}
+function retakeMobileDocument(){capturedScanData=null;document.getElementById("mobilePreview").replaceChildren();document.getElementById("captureDocumentBtn").classList.remove("hidden");document.getElementById("retakeDocumentBtn").classList.add("hidden");document.getElementById("sendDocumentBtn").classList.add("hidden")}
+function captureMobileDocument(){
+ const v=document.getElementById("mobileCamera");if(!v.videoWidth){alert("Camera अझै तयार भएको छैन।");return}
+ const c=document.getElementById("mobileCanvas");c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0,c.width,c.height);
+ if(window.cv&&cv.Mat)autoCropDocument(c);else showCapturedCanvas(c);
+}
+function autoCropDocument(c){
+ let src=null,gray=null,blur=null,edges=null,contours=null,hierarchy=null,approxBest=null;
+ try{
+  src=cv.imread(c);gray=new cv.Mat();blur=new cv.Mat();edges=new cv.Mat();contours=new cv.MatVector();hierarchy=new cv.Mat();
+  cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY);cv.GaussianBlur(gray,blur,new cv.Size(5,5),0);cv.Canny(blur,edges,60,180);cv.findContours(edges,contours,hierarchy,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE);
+  let areaBest=0,total=c.width*c.height;
+  for(let i=0;i<contours.size();i++){let con=contours.get(i),a=cv.contourArea(con),peri=cv.arcLength(con,true),ap=new cv.Mat();cv.approxPolyDP(con,ap,.02*peri,true);if(a>total*.12&&a>areaBest&&ap.rows===4){if(approxBest)approxBest.delete();approxBest=ap;areaBest=a}else ap.delete();con.delete()}
+  if(approxBest){
+   let pts=[];for(let i=0;i<4;i++)pts.push({x:approxBest.data32S[i*2],y:approxBest.data32S[i*2+1]});approxBest.delete();
+   const o=orderDocumentPoints(pts),w=Math.round(Math.max(Math.hypot(o.br.x-o.bl.x,o.br.y-o.bl.y),Math.hypot(o.tr.x-o.tl.x,o.tr.y-o.tl.y))),h=Math.round(Math.max(Math.hypot(o.tr.x-o.br.x,o.tr.y-o.br.y),Math.hypot(o.tl.x-o.bl.x,o.tl.y-o.bl.y)));
+   const sp=cv.matFromArray(4,1,cv.CV_32FC2,[o.tl.x,o.tl.y,o.tr.x,o.tr.y,o.br.x,o.br.y,o.bl.x,o.bl.y]),dp=cv.matFromArray(4,1,cv.CV_32FC2,[0,0,w-1,0,w-1,h-1,0,h-1]),M=cv.getPerspectiveTransform(sp,dp),out=new cv.Mat();
+   cv.warpPerspective(src,out,M,new cv.Size(w,h));const oc=document.createElement("canvas");oc.width=w;oc.height=h;cv.imshow(oc,out);showCapturedCanvas(oc);sp.delete();dp.delete();M.delete();out.delete();
+  }else showCapturedCanvas(c);
+ }catch(e){console.error(e);showCapturedCanvas(c)}
+ finally{[src,gray,blur,edges,contours,hierarchy].forEach(x=>{if(x)try{x.delete()}catch(e){}})}
+}
+function orderDocumentPoints(p){const s=x=>x.x+x.y,d=x=>x.x-x.y;return{tl:p.reduce((a,b)=>s(a)<s(b)?a:b),br:p.reduce((a,b)=>s(a)>s(b)?a:b),tr:p.reduce((a,b)=>d(a)>d(b)?a:b),bl:p.reduce((a,b)=>d(a)<d(b)?a:b)}}
+function showCapturedCanvas(c){
+ capturedScanData=c.toDataURL("image/jpeg",.82);const box=document.getElementById("mobilePreview");box.replaceChildren();const img=document.createElement("img");img.src=capturedScanData;box.appendChild(img);
+ document.getElementById("captureDocumentBtn").classList.add("hidden");document.getElementById("retakeDocumentBtn").classList.remove("hidden");document.getElementById("sendDocumentBtn").classList.remove("hidden");
+}
+function sendScannedDocument(){
+ if(!capturedScanData||!scannerConnection||!scannerConnection.open){alert("Computer सँग connection छैन।");return}
+ scannerConnection.send({type:"document",sessionId:scannerSessionId,name:"mobile-document-"+Date.now()+".jpg",data:capturedScanData});
+ capturedScanData=null;document.getElementById("mobilePreview").innerHTML='<div class="alert alert-success">✓ कागजात Computer मा पठाइयो।</div>';document.getElementById("captureDocumentBtn").classList.remove("hidden");document.getElementById("retakeDocumentBtn").classList.add("hidden");document.getElementById("sendDocumentBtn").classList.add("hidden");
+}
+
+function save(){localStorage.setItem("gb_users",JSON.stringify(users));localStorage.setItem("gb_records",JSON.stringify(records));localStorage.setItem("gb_template",JSON.stringify(template))}
+function toggleLoginPassword(show){document.getElementById("loginPass").type=show?"text":"password"}
+function login(){
+ const u=document.getElementById("loginUser").value.trim(), p=document.getElementById("loginPass").value;
+ if(!users[u]||users[u].password!==p){alert("User ID वा Password गलत छ।");return}
+ current={id:u,...users[u]}; sessionStorage.setItem("gb_current",JSON.stringify(current));startApp();
+}
+function logout(){sessionStorage.removeItem("gb_current");location.reload()}
+function startApp(){
+ document.getElementById("loginView").classList.add("hidden");document.getElementById("appView").classList.remove("hidden");
+ document.getElementById("userBadge").textContent=current.role==="municipality"?"नगरपालिका user":"वडा नं. "+toNepaliDigits(current.ward)+" user";
+ buildNav();show(current.role==="municipality"?"dashboard":"wardForm");
+}
+function buildNav(){
+ const nav=document.getElementById("nav");nav.innerHTML="";
+ if(current.role==="municipality"){
+  [["dashboard","ड्यासबोर्ड"],["municipality","बैंकका लागि सिफारिस"],["templates","पत्र ढाँचा"],["users","वडा User व्यवस्थापन"]].forEach(x=>nav.innerHTML+=`<a href="#" class="nav-link" onclick="show('${x[0]}')">${x[1]}</a>`);
+ }else [["dashboard","ड्यासबोर्ड"],["wardForm","नयाँ सिफारिस"],["wardList","सिफारिस रेकर्ड"]].forEach(x=>nav.innerHTML+=`<a href="#" class="nav-link" onclick="show('${x[0]}')">${x[1]}</a>`);
+}
+function show(s){
+ ["wardFormSection","wardListSection","municipalitySection","templatesSection","usersSection","dashboardSection"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+ if(s==="wardForm"){document.getElementById("wardFormSection").classList.remove("hidden");initWard()}
+ if(s==="wardList"){document.getElementById("wardListSection").classList.remove("hidden");renderWardList()}
+ if(s==="municipality"){document.getElementById("municipalitySection").classList.remove("hidden");renderMunicipality()}
+ if(s==="templates"){document.getElementById("templatesSection").classList.remove("hidden");loadTemplate()}
+ if(s==="users"){document.getElementById("usersSection").classList.remove("hidden");renderUsers()}
+ if(s==="dashboard"){document.getElementById("dashboardSection").classList.remove("hidden");dashboard()}
+}
+function initWard(){
+ const w=current.ward;document.getElementById("wardNo").value=toNepaliDigits(w);document.getElementById("autoBank").textContent="स्वतः बैंक: "+BANKS[w];
+ const sel=document.getElementById("bank");sel.innerHTML=Object.values(BANKS).filter((v,i,a)=>a.indexOf(v)===i).map(b=>`<option>${b}</option>`).join("");sel.value=BANKS[w];
+ editingRecordId=null;document.getElementById("wardFormTitle").textContent="वडाबाट सामाजिक सुरक्षा सिफारिस";
+ document.getElementById("printWardButton").classList.remove("hidden");document.getElementById("previewWardButton").classList.remove("hidden");document.getElementById("cancelWardEditButton").classList.add("hidden");
+ bankCheck();setupFormSuggestions();
+}
+function editRecord(id){
+ const r=records.find(x=>x.id===id);if(!r)return;
+ if(current.role==="ward"&&(r.ward!==+current.ward||r.municipalityPrinted)){alert("नगरबाट प्रिन्ट भएको वा तपाईँको वडाको नभएको रेकर्ड सम्पादन गर्न मिल्दैन।");return}
+ editingRecordId=id;
+ ["wardFormSection","wardListSection","municipalitySection","templatesSection","usersSection","dashboardSection"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+ document.getElementById("wardFormSection").classList.remove("hidden");
+ document.getElementById("wardFormTitle").textContent="सिफारिस विवरण सम्पादन";
+ const sel=document.getElementById("bank");sel.innerHTML=Object.values(BANKS).filter((v,i,a)=>a.indexOf(v)===i).map(b=>`<option>${b}</option>`).join("");
+ const fields={recType:"type",wardNo:"ward",bank:"bank",ps:"ps",chNo:"chNo",letterDate:"letterDate",applicantName:"applicantName",father:"father",relation:"relation",ssn:"ssn",beneficiary:"beneficiary",deathDate:"deathDate",fy:"fy",quarter:"quarter",amount:"amount",amountWords:"amountWords",refundAmount:"refundAmount",refundAmountWords:"refundAmountWords",guardianRelation:"guardianRelation",citizenship:"citizenship",citizenDate:"citizenDate",guardian:"guardian",disabilityReason:"disabilityReason"};
+ Object.entries(fields).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.value=r[key]??""});
+ document.getElementById("wardNo").value=toNepaliDigits(r.ward);document.getElementById("autoBank").textContent="वडा नं. "+toNepaliDigits(r.ward)+" — "+(BANKS[r.ward]||"");
+ const cost=document.querySelector(`input[name="cost"][value="${r.cost||"no"}"]`);if(cost)cost.checked=true;
+ document.getElementById("printWardButton").classList.toggle("hidden",current.role==="municipality");
+ document.getElementById("previewWardButton").classList.toggle("hidden",current.role==="municipality");
+ document.getElementById("cancelWardEditButton").classList.remove("hidden");
+ toggleType();bankCheck();
+}
+function cancelWardEdit(){editingRecordId=null;show(current.role==="municipality"?"municipality":"wardList")}
+function deleteRecord(id){
+ const r=records.find(x=>x.id===id);if(!r)return;
+ if(current.role==="ward"&&(r.ward!==+current.ward||r.municipalityPrinted)){alert("नगरबाट प्रिन्ट भएको वा तपाईँको वडाको नभएको रेकर्ड मेटाउन मिल्दैन।");return}
+ if(!confirm("यो सिफारिस रेकर्ड स्थायी रूपमा मेटाउने?"))return;
+ records=records.filter(x=>x.id!==id);save();
+ if(current.role==="municipality")renderMunicipality();else renderWardList();
+}
+function setupFormSuggestions(){
+ const fields=["ps","chNo","applicantName","father","relation","ssn","beneficiary","fy","amount","amountWords","guardianRelation","citizenship","guardian","disabilityReason"];
+ const type=document.getElementById("recType").value;
+ const recent=records.filter(r=>r.ward===+current.ward&&r.type===type).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,3);
+ fields.forEach(id=>{
+  const input=document.getElementById(id),listId=`suggest-${id}`;
+  let list=document.getElementById(listId);
+  if(!list){list=document.createElement("datalist");list.id=listId;document.body.appendChild(list)}
+  list.replaceChildren(...recent.map(r=>r[id]).filter(value=>value!=null&&String(value).trim()!=="").map(value=>{const option=document.createElement("option");option.value=value;return option}));
+  input.setAttribute("list",listId);
+ });
+}
+function bankCheck(){const w=+toAsciiDigits(document.getElementById("wardNo").value),b=document.getElementById("bank").value;document.getElementById("bankWarn").textContent=b!==BANKS[w]?"⚠ वडा अनुसार सही बैंक: "+BANKS[w]:""}
+function toggleType(){
+ const d=document.getElementById("recType").value==="death";document.querySelectorAll(".deathOnly").forEach(e=>e.classList.toggle("hidden",!d));document.querySelectorAll(".disabledOnly").forEach(e=>e.classList.toggle("hidden",d));
+ if(current?.role==="ward")setupFormSuggestions();
+}
+function val(id){return document.getElementById(id).value.trim()}
+function getForm(){
+ return {id:crypto.randomUUID(),type:val("recType"),ward:+toAsciiDigits(val("wardNo")),bank:val("bank"),ps:val("ps"),chNo:val("chNo"),letterDate:val("letterDate"),applicantName:val("applicantName"),father:val("father"),relation:val("relation"),ssn:val("ssn"),beneficiary:val("beneficiary"),deathDate:val("deathDate"),fy:val("fy"),quarter:val("quarter"),amount:val("amount"),amountWords:val("amountWords"),refundAmount:val("refundAmount"),refundAmountWords:val("refundAmountWords"),guardianRelation:val("guardianRelation"),citizenship:val("citizenship"),citizenDate:val("citizenDate"),guardian:val("guardian"),disabilityReason:val("disabilityReason"),cost:document.querySelector('input[name="cost"]:checked')?.value||"no",printed:false,municipalityPrinted:false,createdAt:Date.now()};
+}
+function validate(r,print){
+ if(r.bank!==BANKS[r.ward]) return "वडा अनुसार बैंक गलत चयन भएको छ। सही बैंक चयन गर्नुहोस्।";
+ if(!r.beneficiary||!r.ssn||!r.guardian) return "लाभग्राही, परिचयपत्र नं. र संरक्षकको नाम अनिवार्य छन्।";
+ if(r.ssn.length!==13) return "सा.सु. परिचयपत्र नं. ठीक १३ अंकको हुनुपर्छ।";
+ if(r.type==="disabled"&&(!r.applicantName||!r.disabilityReason)) return "निवेदकको नाम र आफै उपस्थित हुन नसक्नुको कारण भर्नुहोस्।";
+ if(r.type==="death"&&(!r.refundAmount||!r.refundAmountWords)) return "फिर्ता गर्नुपर्ने रकम र अक्षरेपी रकम अनिवार्य छन्।";
+ if(r.type==="death"&&print&&r.cost!=="yes") return "लागत कट्टा नभएसम्म मृतक लाभग्राहीको पत्र प्रिन्ट गर्न मिल्दैन।";
+ return "";
+}
+function compressImage(file){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();reader.onerror=()=>reject(reader.error);reader.onload=()=>{
+   const image=new Image();image.onerror=()=>reject(new Error("फोटो पढ्न सकिएन"));image.onload=()=>{
+    const scale=Math.min(1,1400/Math.max(image.width,image.height)),canvas=document.createElement("canvas");
+    canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);
+    canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",.72));
+   };image.src=reader.result;
+  };reader.readAsDataURL(file);
+ });
+}
+async function saveWardRecord(print){
+ const r=getForm(),existing=editingRecordId?records.find(x=>x.id===editingRecordId):null;
+ if(editingRecordId&&!existing){alert("सम्पादन गर्न खोजेको रेकर्ड भेटिएन।");return}
+ if(existing&&current.role==="ward"&&(existing.ward!==+current.ward||existing.municipalityPrinted)){alert("यो रेकर्ड सम्पादन गर्न अनुमति छैन।");return}
+ if(current.role==="municipality"&&print){alert("नगरपालिका प्रयोगकर्ताले सम्पादन फारामबाट प्रिन्ट गर्न मिल्दैन।");return}
+ const err=validate(r,print);if(err){alert(err);return}
+ const files=Array.from(document.getElementById("documents").files).slice(0,3);
+ if(files.length+scannedDocuments.length>3){alert("अधिकतम ३ वटा कागजात मात्र संलग्न गर्न सकिन्छ।");return}
+ try{
+  const localDocs=await Promise.all(files.map(compressImage));
+  const updatedDocs=[...localDocs,...scannedDocuments.map(x=>x.data)];
+  if(existing){
+   r.id=existing.id;r.printed=existing.printed||print;r.municipalityPrinted=existing.municipalityPrinted;r.municipalityPrintDate=existing.municipalityPrintDate;r.createdAt=existing.createdAt;
+   r.documents=updatedDocs.length?updatedDocs.slice(0,3):(existing.documents||[]);
+   records[records.findIndex(x=>x.id===existing.id)]=r;
+  }else{
+   r.documents=updatedDocs.slice(0,3);r.printed=print;records.push(r);
+  }
+ }catch(e){alert("कागजातको फोटो पढ्न सकिएन।");return}
+ save();scannedDocuments=[];document.getElementById("documents").value="";renderAllDocumentPreviews();
+ if(print){printWard(r);clearWardFormAfterPrint();editingRecordId=null}
+ else if(existing){editingRecordId=null;if(current.role==="municipality")show("municipality");else{renderWardList();show("wardList")}}
+ else{renderWardList();setupFormSuggestions();document.getElementById("wardMsg").innerHTML='<span class="text-success">रेकर्ड सुरक्षित भयो। पत्र प्रिन्ट गर्न बाँकी छ।</span>'}
+}
+function clearWardFormAfterPrint(){
+ ["ps","chNo","applicantName","father","relation","ssn","beneficiary","deathDate","fy","amount","amountWords","refundAmount","refundAmountWords","guardianRelation","citizenship","citizenDate","guardian","disabilityReason"].forEach(id=>document.getElementById(id).value="");
+ document.getElementById("letterDate").value=todayBsDate();
+ document.getElementById("recType").value="death";
+ document.getElementById("quarter").selectedIndex=0;
+ document.querySelector('input[name="cost"][value="no"]').checked=true;
+ toggleType();
+ document.getElementById("wardMsg").innerHTML='<span class="text-success">रेकर्ड सुरक्षित गरी पत्र प्रिन्ट गरियो। फाराम खाली गरिएको छ।</span>';
+}
+function fillDeath(r){
+ return `<div class="recommendation-letterhead ward-letterhead"><img src="https://uploads.onecompiler.io/454aq7e82/454av5zqq/Emblem_of_Nepal.png" alt="नेपालको राष्ट्रिय प्रतीक"><div class="letterhead-text"><span class="ward-letterhead-title">गोलबजार नगरपालिका<br>${toNepaliDigits(r.ward)} नं. वडा कार्यालय</span><br>${PLACES[r.ward]}, सिरहा<br>मधेश प्रदेश, नेपाल</div></div>
+<div class="date"><div class="ward-reference-number">प.स. : ${r.ps||""}<br>च.नं. : ${r.chNo||""}</div>मिति : ${r.letterDate}</div>
+<p>श्री प्रमुख प्रशासकीय अधिकृतज्यू,<br>गोलबजार नगरपालिकाको कार्यालय,<br>गोलबजार, सिरहा ।</p>
+<h5 class="ward-subject">विषय : सामाजिक सुरक्षा भत्ता उपलब्ध गराईदिनुहुन ।</h5>
+<div class="body">प्रस्तुत विषयमा गोलबजार नगरपालिका वडा नं. ${toNepaliDigits(r.ward)}, ${PLACES[r.ward]} बस्ने ${r.father} को ${r.relation} सा.सु. परिचयपत्र नं. ${r.ssn} भएको श्री ${r.beneficiary} को मिति ${r.deathDate} गतेमा मृत्यु भएको हुँदा निज लाभग्राहीले पाउने आ.व. ${r.fy} ${r.quarter} त्रैमासिकबाट रकम रु. ${r.amount}/-(अक्षरेपी ${r.amountWords} मात्र) र अघिल्लो किस्ताको सम्पूर्ण रकम निज लाभग्राहीको ${r.guardianRelation} ना.प्र.नं. ${r.citizenship} जारी मिति ${r.citizenDate} को ${r.guardian} लाई उपलब्ध गराई निज लाभग्राहीको खाता बन्द गरी बाँकी रहेको रकम रु. ${r.refundAmount}/- (${r.refundAmountWords} मात्र) फिर्ता गरिदिनुहुन सिफारिस साथ अनुरोध छ ।</div>`;
+}
+function fillDisabled(r){
+ return `<div class="recommendation-letterhead ward-letterhead"><img src="https://uploads.onecompiler.io/454aq7e82/454av5zqq/Emblem_of_Nepal.png" alt="नेपालको राष्ट्रिय प्रतीक"><div class="letterhead-text"><span class="ward-letterhead-title">गोलबजार नगरपालिका<br>${toNepaliDigits(r.ward)} नं. वडा कार्यालय</span><br>${PLACES[r.ward]}, सिरहा<br>मधेश प्रदेश, नेपाल</div></div>
+<div class="date"><div class="ward-reference-number">प.स. : ${r.ps||""}<br>च.नं. : ${r.chNo||""}</div>मिति : ${r.letterDate}</div>
+<p>श्री प्रमुख प्रशासकीय अधिकृतज्यू,<br>गोलबजार नगरपालिकाको कार्यालय,<br>गोलबजार, सिरहा ।</p>
+<h5 class="ward-subject">विषय : सामाजिक सुरक्षा भत्ता उपलब्ध गराईदिनुहुन ।</h5>
+<div class="body">प्रस्तुत विषयमा गोलबजार नगरपालिका वडा नं. ${toNepaliDigits(r.ward)}, बस्ने ${r.applicantName} ले यस कार्यालयमा दिनुभएको निवेदन अनुसार ${r.father} को ${r.relation} सा.सु. परिचयपत्र नं. ${r.ssn} भएको श्री ${r.beneficiary} ${r.disabilityReason} निज लाभग्राही स्वयं बैंकमा उपस्थित हुन नसक्ने भएको हुँदा निज लाभग्राहीले पाउने आ.व. ${r.fy} ${r.quarter} त्रैमासिकको सामाजिक सुरक्षा भत्ता बापतको रकम निज लाभग्राहीको ${r.guardianRelation} ना.प्र.नं. ${r.citizenship} जारी मिति ${r.citizenDate} को ${r.guardian} लाई उपलब्ध गराईदिनुहुन सिफारिस साथ अनुरोध छ ।</div>`;
+}
+function printWard(r){
+ const err=validate(r,true);if(err){alert(err);return}
+ document.getElementById("printArea").innerHTML=`<div class="letter">${r.type==="death"?fillDeath(r):fillDisabled(r)}<div class="text-end mt-5">........................</div></div>`;
+ window.print();
+}
+function previewWard(){const r=getForm(),err=validate(r,false);if(err){alert(err);return}document.getElementById("printArea").innerHTML=`<div class="letter">${r.type==="death"?fillDeath(r):fillDisabled(r)}<div class="text-end mt-5">........................</div></div>`;document.getElementById("printArea").classList.remove("hidden");window.scrollTo(0,document.body.scrollHeight)}
+function inRange(d,f,t){return (!f||d>=f)&&(!t||d<=t)}
+function renderWardList(){
+ const tb=document.querySelector("#wardTable tbody"),f=val("wFrom"),t=val("wTo");tb.innerHTML="";
+ records.filter(r=>r.ward===+current.ward&&inRange(r.letterDate,f,t)).forEach(r=>tb.innerHTML+=`<tr><td>${r.letterDate}</td><td>${r.type==="death"?"मृत्यु":"विरामी/अशक्त"}</td><td>${r.beneficiary}</td><td>${r.ssn}</td><td>${toNepaliDigits(r.ward)}</td><td>${r.bank}</td><td><span class="badge ${r.printed?"text-bg-success":"text-bg-secondary"}">${r.printed?"प्रिन्ट भएको":"प्रिन्ट गर्न बाँकी"}</span></td><td><button class="btn btn-sm btn-primary" onclick="printWardById('${r.id}')">प्रिन्ट</button> ${r.municipalityPrinted?'<span class="small-muted">नगरबाट लक</span>':`<button class="btn btn-sm btn-warning" onclick="editRecord('${r.id}')">Edit</button> <button class="btn btn-sm btn-danger" onclick="deleteRecord('${r.id}')">Delete</button>`}</td></tr>`);
+}
+function printWardById(id){const r=records.find(x=>x.id===id);if(!r)return;const err=validate(r,true);if(err){alert(err);return}r.printed=true;save();printWard(r);renderWardList()}
+function renderMunicipality(){
+ const w=val("mWard"),type=val("mType"),f=val("mFrom"),t=val("mTo"),tb=document.getElementById("municipalityBody");tb.innerHTML="";
+ records.filter(r=>r.printed&&(!w||r.ward==w)&&(!type||r.type===type)&&inRange(r.letterDate,f,t)).forEach(r=>tb.innerHTML+=`<tr><td>${toNepaliDigits(r.ward)}</td><td>${r.beneficiary}</td><td>${r.type==="death"?"मृत्यु":"विरामी/अशक्त"}</td><td>${r.letterDate}</td><td>${r.bank}</td><td>${r.municipalityPrinted?"जारी भएको":"बाँकी"}</td><td><button class="btn btn-sm btn-primary" onclick="municipalityPrint('${r.id}')">बैंक पत्र</button> <button class="btn btn-sm btn-warning" onclick="editRecord('${r.id}')">Edit</button> <button class="btn btn-sm btn-danger" onclick="deleteRecord('${r.id}')">Delete</button></td></tr>`);
+}
+function municipalityPrint(id){
+ const r=records.find(x=>x.id===id);if(!r)return;
+ const rep=(s)=>s.replaceAll("{{bank}}",r.bank+"<br>"+branch).replaceAll("{{ward}}",toNepaliDigits(r.ward)).replaceAll("{{ssn}}",r.ssn).replaceAll("{{beneficiary}}",r.beneficiary).replaceAll("{{guardianRelation}}",r.guardianRelation).replaceAll("{{guardian}}",r.guardian).replaceAll("{{typeText}}",r.type==="death"?"मृत्यु":"बैंकसम्म स्वयं उपस्थित हुन नसक्ने");
+ const issuedDate=r.municipalityPrintDate||todayBsDate();
+ const html=`<div class="letter"><div class="recommendation-letterhead"><img src="https://uploads.onecompiler.io/454aq7e82/454av5zqq/Emblem_of_Nepal.png" alt="नेपालको राष्ट्रिय प्रतीक"><div class="letterhead-text fs-5">गोलबजार नगरपालिका<br>नगर कार्यपालिकाको कार्यालय<br>गोलबजार, सिरहा<br>मधेश प्रदेश, नेपाल</div></div><div class="date mt-3">मिति : ${issuedDate}</div><p class="mt-3">${rep(template.address).replaceAll("\\n","<br>")}</p><h5>${rep(template.subject).replaceAll("\\n","<br>")}</h5><div class="body">${rep(template.body).replaceAll("\\n","<br>")}</div><p class="mt-3">${rep(template.closing).replaceAll("\\n","<br>")}</p><div class="text-end mt-5">........................<br>प्रमुख प्रशासकीय अधिकृत</div></div>`;
+ document.getElementById("printArea").innerHTML=html;document.getElementById("printArea").classList.remove("hidden");window.print();
+ r.municipalityPrinted=true;r.municipalityPrintDate=issuedDate;save();renderMunicipality();
+}
+function loadTemplate(){["tplAddress","tplSubject","tplBody","tplClosing"].forEach((id,i)=>document.getElementById(id).value=[template.address,template.subject,template.body,template.closing][i])}
+function saveTemplate(){template={address:val("tplAddress"),subject:val("tplSubject"),body:val("tplBody"),closing:val("tplClosing")};save();document.getElementById("tplMsg").textContent="सुरक्षित भयो।"}
+function createWardUser(){const w=+val("newWard"),u=val("newUser"),p=val("newPass");if(!w||!u||!p){alert("सबै विवरण भर्नुहोस्");return}users[u]={password:p,role:"ward",ward:w};save();renderUsers()}
+function renderUsers(){
+ const s=document.getElementById("newWard");s.innerHTML=Array.from({length:13},(_,i)=>`<option value="${i+1}">${toNepaliDigits(i+1)} नं. वडा</option>`).join("");
+ const tb=document.getElementById("usersBody");tb.innerHTML="";
+ Object.entries(users).filter(([k,v])=>v.role==="ward").forEach(([k,v])=>tb.innerHTML+=`<tr><td>${toNepaliDigits(v.ward)}</td><td>${k}</td><td><button class="btn btn-sm btn-danger" onclick="deleteUser('${k}')">हटाउनुहोस्</button></td></tr>`);
+}
+function deleteUser(u){if(confirm("यो user हटाउने?")){delete users[u];save();renderUsers()}}
+function drawDashboardCharts(list){
+ const bar=document.getElementById("recommendationChart"),pie=document.getElementById("amountChart");
+ [[bar,2],[pie,1]].forEach(([canvas])=>{const rect=canvas.getBoundingClientRect(),ratio=window.devicePixelRatio||1;canvas.width=Math.max(1,rect.width*ratio);canvas.height=300*ratio;canvas.getContext("2d").setTransform(ratio,0,0,ratio,0,0)});
+ const ctx=bar.getContext("2d"),width=bar.getBoundingClientRect().width,height=300,counts=[list.filter(r=>r.type==="death").length,list.filter(r=>r.type==="disabled").length],max=Math.max(1,...counts);
+ ctx.clearRect(0,0,width,height);ctx.font="14px sans-serif";ctx.fillStyle="#333";
+ const labels=["मृत्यु","विरामी/अशक्त"],colors=["#2878b5","#e8a23a"],base=height-42,top=25,barWidth=Math.min(100,width/5),positions=[width*.3,width*.7];
+ ctx.strokeStyle="#adb5bd";ctx.beginPath();ctx.moveTo(35,top);ctx.lineTo(35,base);ctx.lineTo(width-10,base);ctx.stroke();
+ counts.forEach((value,i)=>{const h=(base-top)*value/max;ctx.fillStyle=colors[i];ctx.fillRect(positions[i]-barWidth/2,base-h,barWidth,h);ctx.fillStyle="#333";ctx.textAlign="center";ctx.fillText(String(value),positions[i],base-h-7);ctx.fillText(labels[i],positions[i],base+23)});
+ const deathRecords=list.filter(r=>r.type==="death"),amountTotal=deathRecords.reduce((sum,r)=>sum+Number(toAsciiDigits(String(r.amount||"")).replace(/[^0-9]/g,"")),0),refundTotal=deathRecords.reduce((sum,r)=>sum+Number(toAsciiDigits(String(r.refundAmount||"")).replace(/[^0-9]/g,"")),0),total=amountTotal+refundTotal;
+ const pctx=pie.getContext("2d"),pw=pie.getBoundingClientRect().width,centerX=Math.min(pw*.36,115),centerY=145,radius=Math.min(95,pw*.27);pctx.clearRect(0,0,pw,300);pctx.font="14px sans-serif";
+ if(total){let start=-Math.PI/2;[[amountTotal,"#2878b5"],[refundTotal,"#e8a23a"]].forEach(([value,color])=>{const end=start+value/total*Math.PI*2;pctx.beginPath();pctx.moveTo(centerX,centerY);pctx.arc(centerX,centerY,radius,start,end);pctx.closePath();pctx.fillStyle=color;pctx.fill();start=end})}else{pctx.fillStyle="#e9ecef";pctx.beginPath();pctx.arc(centerX,centerY,radius,0,Math.PI*2);pctx.fill()}
+ [["भत्ता",amountTotal,"#2878b5"],["फिर्ता रकम",refundTotal,"#e8a23a"]].forEach(([label,value,color],i)=>{const y=120+i*55;pctx.fillStyle=color;pctx.fillRect(centerX+radius+15,y-14,14,14);pctx.fillStyle="#333";pctx.textAlign="left";pctx.fillText(`${label}: ${toNepaliDigits(value.toLocaleString("en-US"))}`,centerX+radius+37,y)});
+}
+function dashboard(){
+ const list=current.role==="ward"?records.filter(r=>r.ward===+current.ward):records;
+ document.getElementById("dTotal").textContent=list.length;document.getElementById("dDeath").textContent=list.filter(r=>r.type==="death").length;document.getElementById("dDisabled").textContent=list.filter(r=>r.type==="disabled").length;document.getElementById("dPrinted").textContent=list.filter(r=>r.municipalityPrinted).length;
+ drawDashboardCharts(list.filter(r=>r.printed));
+}
+function exportExcel(kind){
+ let arr=kind==="ward"?records.filter(r=>r.ward===+current.ward&&r.printed):records.filter(r=>r.printed);
+ const rows=arr.map(r=>({"सिफारिसको किसिम":r.type==="death"?"मृत्यु":"विरामी/अशक्त","वडा":toNepaliDigits(r.ward),"पत्र मिति":r.letterDate,"लाभग्राही":r.beneficiary,"सा.सु. परिचयपत्र नं.":r.ssn,"बैंक":r.bank,"आ.व.":r.fy,"त्रैमासिक":r.quarter,"रकम":r.type==="death"?r.amount:"","अक्षरेपी रकम":r.type==="death"?r.amountWords:"","फिर्ता रकम":r.type==="death"?r.refundAmount:"","फिर्ता रकम अक्षरेपी":r.type==="death"?r.refundAmountWords:"","संरक्षक":r.guardian,"संरक्षक सम्बन्ध":r.guardianRelation,"नागरिकता नं.":r.citizenship,"लागत कट्टा":r.cost==="yes"?"हो":"होइन","नगरबाट पत्र जारी":r.municipalityPrinted?"हो":"होइन"}));
+ const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"सिफारिस रेकर्ड");XLSX.writeFile(wb,"golbazar_social_security_records.xlsx");
+}
+if(new URLSearchParams(location.search).has("mobileScan"))startMobileScanner();
+document.getElementById("mWard").innerHTML='<option value="">सबै वडा</option>'+Array.from({length:13},(_,i)=>`<option value="${i+1}">${toNepaliDigits(i+1)}</option>`).join("");
+const ses=sessionStorage.getItem("gb_current");if(ses){current=JSON.parse(ses);startApp()}
+toggleType();
+setupBsDatePickers();
+setupNepaliNumberInputs();
+setupDocumentInput();
+window.addEventListener("beforeunload",()=>{stopMobileCamera();if(scannerPeer)try{scannerPeer.destroy()}catch(e){}});
+window.addEventListener("resize",()=>{if(!document.getElementById("dashboardSection").classList.contains("hidden"))drawDashboardCharts(current.role==="ward"?records.filter(r=>r.ward===+current.ward&&r.printed):records.filter(r=>r.printed))});
+</script>
+</body></html>
